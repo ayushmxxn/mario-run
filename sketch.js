@@ -326,16 +326,6 @@ function drawGameOver() {
   textSize(20);
   text('Press R to Restart', width/2, centerY + spacing * 3);
   
-  // New high score notification
-  if (score > highScore) {
-    push();
-    translate(width/2, centerY + spacing * 2);
-    rotate(sin(frameCount * 0.1) * 0.1);
-    fill(255, 215, 0);
-    textSize(28);
-    text('★ NEW HIGH SCORE! ★', 0, 0);
-    pop();
-  }
 }
 
 // Background Logic
