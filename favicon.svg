@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Mario's face background -->
+  <rect width="32" height="32" fill="#E52521" rx="6" ry="6"/>
+  
+  <!-- Eyes -->
+  <circle cx="10" cy="12" r="2" fill="white"/>
+  <circle cx="22" cy="12" r="2" fill="white"/>
+  
+  <!-- Pupils -->
+  <circle cx="10" cy="12" r="1" fill="black"/>
+  <circle cx="22" cy="12" r="1" fill="black"/>
+  
+  <!-- Mustache -->
+  <rect x="8" y="18" width="16" height="2" fill="brown"/>
+  <rect x="6" y="16" width="2" height="2" fill="brown"/>
+  <rect x="24" y="16" width="2" height="2" fill="brown"/>
+</svg>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mario Run</title>
+     <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        font-family: "Arial", sans-serif;
+        overflow: hidden;
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+            circle at 20% 70%,
+            rgba(255, 255, 255, 0.1) 0%,
+            transparent 20%
+          ),
+          radial-gradient(
+            circle at 80% 30%,
+            rgba(255, 255, 255, 0.1) 0%,
+            transparent 20%
+          );
+        pointer-events: none;
+        z-index: 1;
+      }
+      #social-links {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 20px;
+        z-index: 10;
+        position: relative;
+      }
+      .social-button {
+        text-decoration: none;
+        color: #e0e0e0;
+        background-color: rgba(74, 74, 74, 0.7);
+        padding: 10px 15px;
+        border-radius: 8px;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .social-button:hover {
+        background-color: rgba(90, 90, 90, 0.8);
+      }
+      .social-button i {
+        font-size: 20px;
+        color: #4af7ff;
+      }
+      #game-container {
+        position: relative;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        border-radius: 10px;
+        overflow: hidden;
+        z-index: 10;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="social-links">
+      <a
+        href="https://github.com/ayushmxxn"
+        target="_blank"
+        class="social-button"
+      >
+        <i class="fab fa-github"></i>GitHub
+      </a>
+      <a href="https://x.com/ayushmxxn" target="_blank" class="social-button">
+        <i class="fab fa-twitter"></i>Twitter
+      </a>
+      <a
+        href="https://discord.com/invite/kzk6uWey3g"
+        target="_blank"
+        class="social-button"
+      >
+        <i class="fab fa-discord"></i>Discord
+      </a>
+      <a
+        href="https://github.com/ayushmxxn/mario-run"
+        target="_blank"
+        class="social-button"
+      >
+        <i class="fas fa-code"></i>Source Code
+      </a>
+      <a
+      href="https://ayushmxxn.com/"
+      target="_blank"
+      class="social-button"
+    >
+      <i class="fas fa-link"></i>ayushmxxn.com
+    </a>
+    
+    </div>
+    <div id="game-container"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.js"></script>
+    <script src="sketch.js"></script>
+  </body>
+</html>
