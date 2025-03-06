@@ -331,11 +331,11 @@ function drawGameOver() {
 // Background Logic
 function updateBackground() {
   for (let h of hills) {
-    h.x -= 1 * speedBoost;
+    h.x -= 1;
     if (h.x < -h.w) h.x = width + random(0, 50);
   }
   for (let c of clouds) {
-    c.x -= 0.5 * speedBoost;
+    c.x -= 0.5;
     if (c.x < -c.size) c.x = width + random(0, 50);
   }
 }
@@ -516,8 +516,8 @@ function updateObstacles() {
       continue;
     }
 
-    // Calculate movement based on speed boost
-    let moveSpeed = 4 * min(speedBoost, 2);
+    // Calculate movement with constant speed
+    let moveSpeed = 4;
     obs.x -= moveSpeed;
     
     // Handle different obstacle types
@@ -559,8 +559,6 @@ function updateObstacles() {
             createParticle(obs.x, obs.y, [255, 255, 255]);
           }
         } else {
-          // Reset speed boost on collision
-          speedBoost = 1;
           gameState = GAME_OVER;
           playSound(200, 0.5, 0.3);
         }
@@ -643,8 +641,8 @@ function updateCoins() {
       continue;
     }
     
-    // Update coin position
-    coin.x -= 4 * speedBoost;
+    // Update coin position with constant speed
+    coin.x -= 4;
     
     // Skip coins that are off screen
     if (coin.x < -coin.width) {
@@ -879,7 +877,6 @@ function resetGame() {
   coinTimer = 0;
   styleMeter = 0;
   coinsCollected = 0;
-  speedBoost = 1;
   gameState = PLAYING;
   score = 0;
   level = 1;
@@ -945,7 +942,7 @@ function updatePowerups() {
   
   for (let i = powerups.length - 1; i >= 0; i--) {
     let p = powerups[i];
-    p.x -= 4 * min(speedBoost, 2); // Limit speed boost
+    p.x -= 4; // Constant speed
     
     if (checkCollision(playerX, playerY, playerWidth, playerHeight, p.x, p.y, p.width, p.height)) {
       activatePowerup(p.type);
@@ -967,7 +964,6 @@ function activatePowerup(type) {
   
   switch (type) {
     case POWERUP_TYPES.STAR:
-      speedBoost = 2;
       isInvincible = true;
       invincibilityTimer = frameCount + 300;
       break;
