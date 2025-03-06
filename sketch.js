@@ -511,7 +511,14 @@ function updateObstacles() {
   
   for (let i = obstacles.length - 1; i >= 0; i--) {
     let obs = obstacles[i];
-    obs.x -= 4 * min(speedBoost, 2); // Limit speed boost
+    if (!obs) {
+      obstacles.splice(i, 1);
+      continue;
+    }
+
+    // Calculate movement based on speed boost
+    let moveSpeed = 4 * min(speedBoost, 2);
+    obs.x -= moveSpeed;
     
     // Handle different obstacle types
     if (obs.type === 'moving') {
@@ -522,19 +529,44 @@ function updateObstacles() {
     if (obs.x < -obs.width) {
       obstacles.splice(i, 1);
       styleMeter += 10 * comboMultiplier;
-    } else if (!isInvincible && checkCollision(playerX, playerY, playerWidth, playerHeight, obs.x, obs.y - obs.height, obs.width, obs.height)) {
-      if (shieldActive) {
-        shieldActive = false;
-        obstacles.splice(i, 1);
-        for (let j = 0; j < 10; j++) { // Reduced particle count
-          createParticle(obs.x, obs.y, [255, 255, 255]);
+    } else {
+      // Improved collision detection with speed compensation
+      let playerRight = playerX + playerWidth;
+      let playerLeft = playerX;
+      let playerTop = playerY;
+      let playerBottom = playerY + playerHeight;
+      
+      let obsRight = obs.x + obs.width;
+      let obsLeft = obs.x;
+      let obsTop = obs.y - obs.height;
+      let obsBottom = obs.y;
+      
+      // Add a small buffer zone for collision detection
+      let buffer = 5;
+      
+      // Check for collision with buffer zone and speed compensation
+      let collision = !isInvincible && 
+        playerRight + buffer > obsLeft && 
+        playerLeft - buffer < obsRight && 
+        playerBottom + buffer > obsTop && 
+        playerTop - buffer < obsBottom;
+      
+      if (collision) {
+        if (shieldActive) {
+          shieldActive = false;
+          obstacles.splice(i, 1);
+          for (let j = 0; j < 10; j++) {
+            createParticle(obs.x, obs.y, [255, 255, 255]);
+          }
+        } else {
+          // Reset speed boost on collision
+          speedBoost = 1;
+          gameState = GAME_OVER;
+          playSound(200, 0.5, 0.3);
         }
-      } else {
-        gameState = GAME_OVER;
-        playSound(200, 0.5, 0.3);
+      } else if (dist(playerX, playerY, obs.x, obs.y) < 50) {
+        styleMeter += 5 * comboMultiplier;
       }
-    } else if (dist(playerX, playerY, obs.x, obs.y) < 50) {
-      styleMeter += 5 * comboMultiplier;
     }
   }
 }
@@ -600,19 +632,53 @@ function updateCoins() {
     coinTimer = 0;
   }
   
-  for (let i = coins.length - 1; i >= 0; i--) {
-    coins[i].x -= 4 * speedBoost;
+  // Create a new array to store valid coins
+  let validCoins = [];
+  
+  for (let i = 0; i < coins.length; i++) {
+    let coin = coins[i];
     
-    // Coin magnet effect
-    if (coinMagnetActive && dist(playerX, playerY, coins[i].x, coins[i].y) < 200) {
-      coins[i].x -= 8;
+    // Skip invalid coins
+    if (!coin || typeof coin !== 'object') {
+      continue;
     }
     
-    if (coins[i].x < -coins[i].width) {
-      coins.splice(i, 1);
-    } else if (checkCollision(playerX, playerY, playerWidth, playerHeight, coins[i].x, coins[i].y, coins[i].width, coins[i].height)) {
-      coins.splice(i, 1);
-      coinsCollected += coins[i].value;
+    // Update coin position
+    coin.x -= 4 * speedBoost;
+    
+    // Skip coins that are off screen
+    if (coin.x < -coin.width) {
+      continue;
+    }
+    
+    // Handle coin magnet effect
+    if (coinMagnetActive && dist(playerX, playerY, coin.x, coin.y) < 200) {
+      coin.x -= 8;
+    }
+    
+    // Check for collision with player
+    let playerRight = playerX + playerWidth;
+    let playerLeft = playerX;
+    let playerTop = playerY;
+    let playerBottom = playerY + playerHeight;
+    
+    let coinRight = coin.x + coin.width;
+    let coinLeft = coin.x;
+    let coinTop = coin.y;
+    let coinBottom = coin.y + coin.height;
+    
+    // Add a small buffer zone for collision detection
+    let buffer = 5;
+    
+    let collision = 
+      playerRight + buffer > coinLeft && 
+      playerLeft - buffer < coinRight && 
+      playerBottom + buffer > coinTop && 
+      playerTop - buffer < coinBottom;
+    
+    if (collision) {
+      // Handle coin collection
+      coinsCollected += 1; // Always add 1 coin, regardless of value
       styleMeter += 20 * comboMultiplier;
       combo++;
       comboTimer = 60;
@@ -621,10 +687,19 @@ function updateCoins() {
       
       // Create coin collection particles
       for (let j = 0; j < 10; j++) {
-        createParticle(coins[i].x, coins[i].y, coinYellow);
+        createParticle(coin.x, coin.y, coinYellow);
       }
+      
+      // Skip adding this coin to valid coins (it's collected)
+      continue;
     }
+    
+    // Add valid coin to the new array
+    validCoins.push(coin);
   }
+  
+  // Update the coins array with only valid coins
+  coins = validCoins;
 }
 
 function drawCoins() {
